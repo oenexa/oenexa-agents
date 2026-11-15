@@ -1,0 +1,138 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OENEXA Autonomous Agent Swarm API",
+    "version": "1.0.0",
+    "description": "Multi-agent coordination, specialized engineering roles, task assignment, and execution planner."
+  },
+  "servers": [
+    {
+      "url": "https://app.oenexa.com/api/agents",
+      "description": "Agent Swarm Gateway Route"
+    }
+  ],
+  "paths": {
+    "/v1/agents": {
+      "get": {
+        "summary": "List Active Swarm Agents",
+        "operationId": "listAgents",
+        "responses": {
+          "200": {
+            "description": "List of active agents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Agent"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tasks": {
+      "post": {
+        "summary": "Submit Engineering Task to Swarm",
+        "operationId": "submitTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskSubmissionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task queued for execution",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwarmTask"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tasks/{taskId}/execute": {
+      "post": {
+        "summary": "Execute Task via Assigned Agent",
+        "operationId": "executeTask",
+        "parameters": [
+          { "name": "taskId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agentId": { "type": "string" }
+                },
+                "required": ["agentId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task executed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwarmTask"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Agent": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "role": { "type": "string", "enum": ["ARCHITECT", "CODE_ENGINEER", "DEVSECOPS", "QA"] },
+          "state": { "type": "string", "enum": ["IDLE", "BUSY"] },
+          "model": { "type": "string" },
+          "tasksCompleted": { "type": "integer" }
+        },
+        "required": ["id", "name", "role", "state"]
+      },
+      "TaskSubmissionRequest": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "requiredRole": { "type": "string", "enum": ["ARCHITECT", "CODE_ENGINEER", "DEVSECOPS", "QA"] }
+        },
+        "required": ["title", "description", "requiredRole"]
+      },
+      "SwarmTask": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "requiredRole": { "type": "string" },
+          "status": { "type": "string", "enum": ["PENDING", "IN_PROGRESS", "COMPLETED", "FAILED"] },
+          "assignedAgentId": { "type": "string" },
+          "output": { "type": "string" }
+        },
+        "required": ["id", "title", "status"]
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "domain": "com.oenexa.agents",
+  "version": "1.0.0",
+  "events": [
+    {
+      "type": "com.oenexa.agents.task.completed.v1",
+      "description": "Emitted when an agent swarm finishes executing an engineering task",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "taskId": { "type": "string" },
+              "agentId": { "type": "string" },
+              "status": { "type": "string" },
+              "completedAt": { "type": "string" }
+            },
+            "required": ["taskId", "agentId", "status"]
+          }
+        }
+      }
+    }
+  ]
+}
