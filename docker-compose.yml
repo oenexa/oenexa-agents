@@ -1,0 +1,23 @@
+# ==============================================================================
+# OENEXA Autonomous Multi-Agent Swarm Service — Standalone Stack
+# ==============================================================================
+
+version: "3.8"
+
+services:
+  oenexa-agents:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: oenexa-agents-standalone
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: "8081"
+      NODE_ENV: production
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8081/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
