@@ -1,10 +1,13 @@
 import http from 'node:http';
 import { SwarmService } from './service/SwarmService.js';
+import { ComplianceWatchdogAgent } from './service/ComplianceWatchdogAgent.js';
 
 export * from './domain/types.js';
 export * from './service/SwarmService.js';
+export * from './service/ComplianceWatchdogAgent.js';
 
 const swarm = new SwarmService();
+const watchdogAgent = new ComplianceWatchdogAgent();
 const PORT = Number(process.env.PORT) || 8081;
 
 export const server = http.createServer((req, res) => {
